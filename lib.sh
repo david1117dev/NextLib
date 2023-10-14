@@ -57,7 +57,8 @@ check_distribution() {
     exit 1
 }
 install() {
-    apt-get update > "$OUTPUT_TARGET"
+    apt-get update -y > "$OUTPUT_TARGET"
+    apt-get upgrade -y > "$OUTPUT_TARGET"
     local package_list="$1"  # Get the comma-separated package list as the first argument
     IFS=',' read -ra packages <<< "$package_list"  # Parse the list into an array
 
