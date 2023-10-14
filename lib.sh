@@ -43,8 +43,6 @@ error() {
 fatal() {
     echo -e "${RED}[FATAL]${NC} $(date +'%H:%M:%S') ${WHITE}$1${NC}"
 }
-
-# Define a function to check the distribution
 check_distribution() {
     supported_distributions=("$@")
     if [[ -f /etc/os-release ]]; then
@@ -59,13 +57,14 @@ check_distribution() {
     exit 1
 }
 install() {
+    apt-get update > "$OUTPUT_TARGET"
     local package_list="$1"  # Get the comma-separated package list as the first argument
     IFS=',' read -ra packages <<< "$package_list"  # Parse the list into an array
 
     for package in "${packages[@]}"; do
         if ! dpkg -l | grep -q "$package"; then
             info "Installing $package..."
-            if apt-get install -y "$package"; then
+            if apt-get install -y "$package" > "$OUTPUT_TARGET"; then
                 info "$package is successfully installed."
             else
                 error "Failed to install $package."
@@ -75,22 +74,76 @@ install() {
         fi
     done
 }
-# Use the DEBUG and DIR flags within your script
+mariadb_manage() {
+    if ! dpkg -l | grep -q "mariadb-server"; then
+            apt-get install -y "mariadb-server" > "$OUTPUT_TARGET"
+    fi
+    local action="$1"
+    local name="$2"
+    local pass="$3"
+    if [ "$pass" = "random" ]; then
+        pass=$(openssl rand -base64 12)
+        warn "Generated random password: $pass"
+    fi
+    export PASS=$pass
+    
+    case "$action" in
+        dbcreate)
+            info "Creating database: $name"
+            mariadb -e "CREATE DATABASE IF NOT EXISTS $name;"
+            info "Database $name created."
+            ;;
+
+        dbdelete)
+            info "Deleting database: $name"
+            mariadb -e "DROP DATABASE IF EXISTS $name;"
+            info "Database $name deleted."
+            ;;
+
+        usercreate)
+            info "Creating user: $name"
+            mariadb -e "CREATE USER IF NOT EXISTS '$name'@'localhost' IDENTIFIED BY '$pass';"
+            info "User $name created."
+            ;;
+
+        userdelete)
+            info "Deleting user: $name"
+            mariadb -e "DROP USER IF EXISTS '$name'@'localhost';"
+            info "User $name deleted."
+            ;;
+
+        *)
+            fatal "Invalid action. Use dbcreate, dbdelete, usercreate, or userdelete."
+            exit 1
+            ;;
+    esac
+}
+replace() {
+    local file="$1"
+    local search_string="$2"
+    local replace_string="$3"
+
+    if [ -f "$file" ]; then
+        sed -i "s|$search_string|$replace_string|g" "$file"
+        info "Replaced '$search_string' with '$replace_string' in $file."
+    else
+        error "File $file not found."
+    fi
+}
+
 
 if [ "$DEBUG" = true ]; then
     info "Debug mode is enabled."
-    OUTPUT_TARGET="/dev/stdin"  # Output will be shown
+    OUTPUT_TARGET="/dev/stdin"
 else
-    OUTPUT_TARGET="/dev/null"  # Output will be discarded
+    OUTPUT_TARGET="/dev/null"
 fi
-echo ${OUTPUT_TARGET}
-apt-get update > OUTPUT_TARGET
 if [ -n "$DIR" ]; then
     info "Directory set to: $DIR"
 fi
 
 # Example usage:
-info "This is an informational message."
-warn "This is a warning message."
-error "This is an error message."
-fatal "This is a fatal error message."
+#info "This is an informational message."
+#warn "This is a warning message."
+#error "This is an error message."
+#fatal "This is a fatal error message."
