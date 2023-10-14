@@ -29,19 +29,19 @@ NC='\033[0m'
 RESET='\e[0m'
 
 info() {
-    echo -e "${GREEN}[INFO]${NC} $(date +'%H:%M:%S') ${WHITE}$1${NC}"
+    echo -e "${GREEN}[INFO]${NC} ${WHITE}$1${NC}"
 }
 
 warn() {
-    echo -e "${YELLOW}[WARN]${NC} $(date +'%H:%M:%S') ${WHITE}$1${NC}"
+    echo -e "${YELLOW}[WARN]${NC} ${WHITE}$1${NC}"
 }
 
 error() {
-    echo -e "${RED}[ERROR]${NC} $(date +'%H:%M:%S') ${WHITE}$1${NC}"
+    echo -e "${RED}[ERROR]${NC} ${WHITE}$1${NC}"
 }
 
 fatal() {
-    echo -e "${RED}[FATAL]${NC} $(date +'%H:%M:%S') ${WHITE}$1${NC}"
+    echo -e "${RED}[FATAL]${NC} ${WHITE}$1${NC}"
 }
 check_distribution() {
     supported_distributions=("$@")
