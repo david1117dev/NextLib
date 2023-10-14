@@ -76,14 +76,15 @@ install() {
     done
 }
 # Use the DEBUG and DIR flags within your script
+
 if [ "$DEBUG" = true ]; then
     info "Debug mode is enabled."
     OUTPUT_TARGET="/dev/stdin"  # Output will be shown
 else
-    OUTPUT_TARGET="/dev/null 2>&1"  # Output will be discarded
+    OUTPUT_TARGET="/dev/null"  # Output will be discarded
 fi
 echo ${OUTPUT_TARGET}
-apt update > OUTPUT_TARGET
+apt-get update > OUTPUT_TARGET
 if [ -n "$DIR" ]; then
     info "Directory set to: $DIR"
 fi
