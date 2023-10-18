@@ -147,7 +147,7 @@ question() {
                     eval "$response_var=\"$user_response\""
                     break
                 else
-                    echo "Invalid URL. Please try again."
+                    error "Invalid URL. Please try again."
                 fi
             elif [ "$validate_type" == "email" ]; then
                 if [[ $user_response =~ ^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$ ]]; then
@@ -155,7 +155,7 @@ question() {
                     eval "$response_var=\"$user_response\""
                     break
                 else
-                    echo "Invalid email. Please try again."
+                    error "Invalid email. Please try again."
                 fi
             elif [ "$validate_type" == "password" ]; then
                 echo  # Add a newline after the hidden password input
