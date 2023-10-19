@@ -132,4 +132,4 @@ WantedBy=multi-user.target
 EOF
 
 systemctl enable --now paymenter.service
-
+info "Your panel should be accesible at ${domain}"
