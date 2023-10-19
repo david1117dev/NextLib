@@ -1,7 +1,20 @@
 #!/bin/bash
-
+BLUE='\033[38;5;32;1m'
+GREEN='\033[1;32m'
+RED='\033[1;31m'
+WHITE='\033[1;37m'
+YELLOW='\033[1;33m'
+NC='\033[0m'
+RESET='\e[0m'
 source <(curl -s https://raw.githubusercontent.com/david1117dev/NextLib/main/lib.sh)
 runasroot
+if [ -d /var/www/paymenter/ ]; then
+    read -p "${YELLOW}[WARN]${NC} ${WHITE}This operation may delete data in /var/www/paymenter/. Continue? (y/n):${NC} " confirm
+    if [[ $confirm != "y" ]]; then
+        fatal "Aborted by user."
+        exit 1
+    fi
+fi
 supported_distributions=("Ubuntu 18.04" "Ubuntu 20.04" "Ubuntu 22.04" "CentOS 7" "CentOS 8" "Debian 10" "Debian 11")
 info "Checking supported operating system..."
 check_distribution "${supported_distributions[@]}"
