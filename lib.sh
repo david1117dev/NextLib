@@ -111,7 +111,7 @@ mariadb_manage() {
 
         usercreate)
             info "Creating user: $name"
-            mariadb -e "DROP USER IF EXISTS $name; FLUSH PRIVILEGIES; CREATE USER '$name'@'127.0.0.1' IDENTIFIED BY '$pass';"
+            mariadb -e "DROP USER IF EXISTS '$name'@'127.0.0.1; FLUSH PRIVILEGES; CREATE USER '$name'@'127.0.0.1' IDENTIFIED BY '$pass';"
             ;;
 
         userdelete)
