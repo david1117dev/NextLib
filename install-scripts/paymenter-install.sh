@@ -113,7 +113,7 @@ chown -R www-data:www-data /var/www/paymenter/*
 rm -f /etc/nginx/sites-enabled/paymenter.conf
 ln -s /etc/nginx/sites-available/paymenter.conf /etc/nginx/sites-enabled/paymenter.conf
 systemctl restart nginx
-(crontab -l ; echo "* * * * * php /var/www/paymenter/artisan schedule:run >> /dev/null 2>&1") | crontab -
+(crontab -l ; echo "* * * * * php /var/www/paymenter/artisan schedule:run >> /dev/null 2>&1") | crontab - > "$OUTPUT_TARGET"
 
 # Create a Queue Worker systemd service
 cat > /etc/systemd/system/paymenter.service <<EOF
@@ -133,5 +133,5 @@ RestartSec=5s
 WantedBy=multi-user.target
 EOF
 
-systemctl enable --now paymenter.service
+systemctl enable --now paymenter.service > "$OUTPUT_TARGET"
 info "Your panel should be accesible at ${domain}"
