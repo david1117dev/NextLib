@@ -1,8 +1,6 @@
 #!/bin/bash
 
-# Import library functions
-WATERMARK=true
-source lib.sh
+source <(curl -s https://raw.githubusercontent.com/david1117dev/NextLib/main/lib.sh)
 runasroot
 supported_distributions=("Ubuntu 18.04" "Ubuntu 20.04" "Ubuntu 22.04" "CentOS 7" "CentOS 8" "Debian 10" "Debian 11")
 info "Checking supported operating system..."
