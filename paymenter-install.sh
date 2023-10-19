@@ -1,17 +1,14 @@
 #!/bin/bash
-BLUE='\033[38;5;32;1m'
-GREEN='\033[1;32m'
-RED='\033[1;31m'
-WHITE='\033[1;37m'
-YELLOW='\033[1;33m'
-NC='\033[0m'
-RESET='\e[0m'
+#################
+# This is a script to install paymenter, an open-source webshop solution
+# Made by david1117dev :)
+#################
 source <(curl -s https://raw.githubusercontent.com/david1117dev/NextLib/main/lib.sh)
 runasroot
 if [ -d /var/www/paymenter/ ]; then
-    read -p "${YELLOW}[WARN]${NC} ${WHITE}This operation may delete data in /var/www/paymenter/. Continue? (y/n):${NC} " confirm
+    read -p $'\033[1;33m[WARN]\033[0m \033[97mThis operation may delete data in /var/www/paymenter/. Continue? (y/n):\033[0m ' confirm
     if [[ $confirm != "y" ]]; then
-        fatal "Aborted by user."
+        fatal "Cancelled by user."
         exit 1
     fi
 fi
