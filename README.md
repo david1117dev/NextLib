@@ -18,3 +18,4 @@ You can source this library using the
 ``` bash
 source https://raw.githubusercontent.com/david1117dev/NextLib/main/lib.sh
 ```
+TODO: DOCUMENTATION
