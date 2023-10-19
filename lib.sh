@@ -196,9 +196,3 @@ fi
 if [ -n "$DIR" ]; then
     info "Directory set to: $DIR"
 fi
-
-# Example usage:
-#info "This is an informational message."
-#warn "This is a warning message."
-#error "This is an error message."
-#fatal "This is a fatal error message."
