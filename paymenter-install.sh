@@ -101,3 +101,25 @@ chown -R www-data:www-data /var/www/paymenter/*
 rm -f /etc/nginx/sites-enabled/paymenter.conf
 ln -s /etc/nginx/sites-available/paymenter.conf /etc/nginx/sites-enabled/paymenter.conf
 systemctl restart nginx
+(crontab -l ; echo "* * * * * php /var/www/paymenter/artisan schedule:run >> /dev/null 2>&1") | crontab -
+
+# Create a Queue Worker systemd service
+cat > /etc/systemd/system/paymenter.service <<EOF
+[Unit]
+Description=Paymenter Queue Worker
+
+[Service]
+User=www-data
+Group=www-data
+Restart=always
+ExecStart=/usr/bin/php /var/www/paymenter/artisan queue:work
+StartLimitInterval=180
+StartLimitBurst=30
+RestartSec=5s
+
+[Install]
+WantedBy=multi-user.target
+EOF
+
+systemctl enable --now paymenter.service
+
