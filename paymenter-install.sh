@@ -103,4 +103,3 @@ chown -R www-data:www-data /var/www/paymenter/*
 rm -f /etc/nginx/sites-enabled/paymenter.conf
 ln -s /etc/nginx/sites-available/paymenter.conf /etc/nginx/sites-enabled/paymenter.conf
 systemctl restart nginx
-
