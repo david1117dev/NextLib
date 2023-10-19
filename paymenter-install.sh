@@ -44,6 +44,7 @@ question "Enter admin user name" name
 question "Enter admin user password" password password
 mariadb_manage usercreate paymenter random
 mariadb_manage dbcreate paymenter > "$OUTPUT_TARGET"
+mariadb --execute "GRANT ALL PRIVILEGES ON paymenter.* TO 'paymenter'@'127.0.0.1' WITH GRANT OPTION;"
 replace /var/www/paymenter/.env "DB_PASSWORD=" "DB_PASSWORD=${PASS}" > "$OUTPUT_TARGET"
 php /var/www/paymenter/artisan migrate --force --seed > "$OUTPUT_TARGET"
 echo -e "$email\n$password\n$username\nadmin" | php /var/www/paymenter/artisan p:user:create > "$OUTPUT_TARGET"
