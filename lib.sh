@@ -185,8 +185,20 @@ replace() {
         error "File $file not found."
     fi
 }
+manage_cron_job() {
+    local action="$1"
+    local cron_command="$2"
 
-
+    if [ "$action" == "add" ]; then
+        (crontab -l ; echo "$cron_command") | crontab -
+        info "Added the following cron job: $cron_command"
+    elif [ "$action" == "remove" ]; then
+        crontab -l | grep -v "$cron_command" | crontab -
+        info "Removed the cron job containing: $cron_command"
+    else
+        error "Invalid action. Use 'add' or 'remove'."
+    fi
+}
 if [ "$DEBUG" = true ]; then
     info "Debug mode is enabled."
     OUTPUT_TARGET="/dev/stdin"
