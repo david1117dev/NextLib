@@ -66,7 +66,7 @@ check_distribution() {
             fi
         done
     fi
-    fatal "This is an unsupported Linux distribution/version."
+    log_fatal "This is an unsupported Linux distribution/version."
     exit 1
 }
 apt_install() {
@@ -77,14 +77,14 @@ apt_install() {
 
     for package in "${packages[@]}"; do
         if ! dpkg -l | grep -q "$package"; then
-            info "Installing $package..."
+            log_info "Installing $package..."
             if apt-get install -y "$package" > "$OUTPUT_TARGET"; then
-                info "$package is successfully installed."
+                log_info "$package is successfully installed."
             else
-                error "Failed to install $package."
+                log_error "Failed to install $package."
             fi
         else
-            info "$package is already installed."
+            log_info "$package is already installed."
         fi
     done
 }
@@ -97,28 +97,28 @@ mariadb_manage() {
     local pass="$3"
     if [ "$pass" = "random" ]; then
         pass=$(openssl rand -base64 12)
-        warn "Generated random password: $pass"
+        log_warn "Generated random password: $pass"
         export PASS=$pass
     fi
     
     case "$action" in
         dbcreate)
-            info "Creating database: $name"
+            log_info "Creating database: $name"
             mariadb -e "DROP DATABASE IF EXISTS $name; CREATE DATABASE $name;"
             ;;
 
         dbdelete)
-            info "Deleting database: $name"
+            log_info "Deleting database: $name"
             mariadb -e "DROP DATABASE IF EXISTS $name;"
             ;;
 
         usercreate)
-            info "Creating user: $name"
+            log_info "Creating user: $name"
             mariadb -e "DROP USER IF EXISTS '$name'@'127.0.0.1'; FLUSH PRIVILEGES; CREATE USER '$name'@'127.0.0.1' IDENTIFIED BY '$pass';"
             ;;
 
         userdelete)
-            info "Deleting user: $name"
+            log_info "Deleting user: $name"
             mariadb -e "DROP USER IF EXISTS '$name'@'localhost';"
             ;;
 
@@ -183,9 +183,9 @@ replace() {
     if [ -f "$file" ]; then
         # Use sed with double quotes to allow variable substitution
         sed -i "s|$search_string|$replace_string|g" "$file"
-        info "Replaced '$search_string' with '$replace_string' in $file."
+        log_info "Replaced '$search_string' with '$replace_string' in $file."
     else
-        error "File $file not found."
+        log_error "File $file not found."
     fi
 }
 manage_cron_job() {
@@ -194,20 +194,20 @@ manage_cron_job() {
 
     if [ "$action" == "add" ]; then
         (crontab -l ; echo "$cron_command") | crontab -
-        info "Added the following cron job: $cron_command"
+        log_info "Added the following cron job: $cron_command"
     elif [ "$action" == "remove" ]; then
         crontab -l | grep -v "$cron_command" | crontab -
-        info "Removed the cron job containing: $cron_command"
+        log_info "Removed the cron job containing: $cron_command"
     else
-        error "Invalid action. Use 'add' or 'remove'."
+        log_error "Invalid action. Use 'add' or 'remove'."
     fi
 }
 if [ "$DEBUG" = true ]; then
-    info "Debug mode is enabled."
+    log_info "Debug mode is enabled."
     OUTPUT_TARGET="/dev/stdin"
 else
     OUTPUT_TARGET="/dev/null"
 fi
 if [ -n "$DIR" ]; then
-    info "Directory set to: $DIR"
+    log_info "Directory set to: $DIR"
 fi
